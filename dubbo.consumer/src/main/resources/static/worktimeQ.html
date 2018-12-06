@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>查询工时</title>
+<script type="text/javascript"
+	src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+<style>
+.row {
+	padding: 5px;
+	border-bottom: solid 1px;
+}
+.no {
+	padding: 5px;
+	border-bottom: solid 1px;
+	background:olive;
+	color: white;
+}
+</style>
+</head>
+<body>
+	<script type="text/javascript">
+		var solr_url = "worktimeQ/q";
+		function search() {
+			$.get({
+				url : solr_url,
+				data : {
+					q : $("#search").val(),
+					page: $("#page").val(),
+				},
+				success : function(worktimes) {
+					var tmp = $("<div></div>");
+					var row;
+					var i = 0;
+					for(var w of worktimes){
+						++i;
+						row = '<div class="no">'+i+'</div><div class="row">';
+						row += "<div>日期："+w.workDateStr+"</div>";
+						row += "<div>姓名："+w.empName+"</div>";
+						row += "<div>工号："+w.empCode+"</div>";
+						row += "<div>项目："+w.prjName+"</div>";
+						row += "<div>活动："+w.actName+"</div>";
+						row += "<div>工时："+w.workHours+"</div>";
+						row += "<div>加班："+w.overWorkHours+"</div>";
+						row += "</div>";
+						tmp.append(row);
+					}
+					$("#resultList").html(tmp.html());
+				}
+			});
+		}
+		$(document).ready(function(){
+			search();
+		});
+	</script>
+	<div>
+		<div id="searchBar" style="padding: 10px">
+			<input id="search" name="search" placeholder="请输入查询的关键字" />
+			<button onclick="search();">查询</button>
+			每页<select id= "page">
+					<option>5</option>
+					<option>10</option>
+					<option>20</option>
+					<option>30</option>
+				</select>
+		</div>
+		<div id="resultBar" style="padding: 10px;">
+			<div style="padding: 5px; background: silver; border: solid 1px;">查询结果</div>
+			<div id="resultList" style="border: solid 1px; border-top: 0;">没有数据</div>
+		</div>
+	</div>
+</body>
+</html>
